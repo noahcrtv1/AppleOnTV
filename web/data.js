@@ -497,6 +497,12 @@ var Data = (function () {
       return mins < rise || mins >= set;
     },
 
+    /** Sunrise and sunset at the location, in minutes after midnight (without a forecast, 6:00 and 18:00). */
+    sun: function () {
+      function hm(t, fallback) { if (!t) return fallback; var x = new Date(t); return x.getHours() * 60 + x.getMinutes(); }
+      return {rise: hm(weather && weather.sunrise, 360), set: hm(weather && weather.sunset, 1080)};
+    },
+
     compact: function (v) {
       if (isNaN(v)) return '—';
       if (v >= 10000) return fmt(v / 1000, 1) + 'k';

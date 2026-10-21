@@ -524,3 +524,70 @@ button { font: inherit; color: inherit; background: none; border: 0; padding: 0;
 
 /* The Magic Remote's pointer: no text selection, no outlines. */
 * { -webkit-user-select: none; user-select: none; -webkit-tap-highlight-color: transparent; }
+
+/* MARK: - Liquid Glass: the wallpaper (wallpaper.js) under real glass, with Apple's type and springs.
+ * backdrop-filter only where the TV has it (Tizen 5.5+, webOS 6+); older TVs keep the frosted gradients above.
+ */
+
+body { font-family: -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', Arial, sans-serif; font-feature-settings: 'cv11', 'ss03'; }
+#title { font-weight: 700; letter-spacing: -0.025em; }
+#clock { font-weight: 250; letter-spacing: -0.04em; }
+.tab, .card .name, .panel .head { letter-spacing: -0.012em; }
+
+/* The wallpaper replaces the blurred pick photo; a thin veil keeps text readable. */
+#sky canvas.wp { position: absolute; left: 0; top: 0; width: 100%; height: 100%; opacity: 0; -webkit-transition: opacity 6s; transition: opacity 6s; }
+#sky canvas.wp.on { opacity: 1; }
+#sky #bgA, #sky #bgB { display: none; }
+#sky .veil { background: rgba(255, 255, 255, 0.08); }
+.night #sky .veil { background: rgba(0, 0, 0, 0.18); }
+#sky .grad { display: none; }
+
+/* Springy, quick, interruptible: Apple's default UI curve. */
+.tab, .round, .card, .tile, .key, .cell .face {
+  -webkit-transition-duration: 0.38s;
+  transition-duration: 0.38s;
+  -webkit-transition-timing-function: cubic-bezier(0.34, 1.3, 0.64, 1);
+  transition-timing-function: cubic-bezier(0.34, 1.3, 0.64, 1);
+  will-change: transform;
+}
+#home, #drawer { -webkit-transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); transition-timing-function: cubic-bezier(0.22, 1, 0.36, 1); }
+
+@supports ((-webkit-backdrop-filter: blur(1px)) or (backdrop-filter: blur(1px))) {
+  /* Clear glass: a light tint, the wallpaper bent and brightened through it, a lit top rim and a soft lower rim. */
+  .round, #platter, .glass, .tab.focus, #saver .clock, #toast {
+    background: rgba(255, 255, 255, 0.2);
+    -webkit-backdrop-filter: blur(26px) saturate(1.9) brightness(1.06);
+    backdrop-filter: blur(26px) saturate(1.9) brightness(1.06);
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.14),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.75),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.22),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.28);
+  }
+  .night .round, .night #platter, .night .glass, .night .tab.focus {
+    background: rgba(255, 255, 255, 0.07);
+    -webkit-backdrop-filter: blur(26px) saturate(1.6) brightness(0.9);
+    backdrop-filter: blur(26px) saturate(1.6) brightness(0.9);
+    box-shadow: 0 14px 44px rgba(0, 0, 0, 0.35),
+      inset 0 1.5px 0 rgba(255, 255, 255, 0.3),
+      inset 0 -1px 0 rgba(255, 255, 255, 0.08),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.12);
+  }
+  #platter { border-radius: 64px; }
+
+  /* Focus: the glass fills with light instead of turning flat white. */
+  .round.focus, .tab.focus, .key.focus {
+    background: rgba(255, 255, 255, 0.82);
+    box-shadow: 0 18px 44px rgba(0, 0, 0, 0.26), inset 0 1.5px 0 #FFF, inset 0 0 0 1px rgba(255, 255, 255, 0.6);
+  }
+  .night .round.focus, .night .tab.focus, .night .key.focus { background: rgba(255, 255, 255, 0.88); color: #1D1D1F; }
+
+  /* Sheets: the home blurs away behind them. */
+  .sheet { background: rgba(0, 0, 0, 0.32); -webkit-backdrop-filter: blur(40px) saturate(1.4); backdrop-filter: blur(40px) saturate(1.4); }
+  #settings .box, #shelfedit .box {
+    background: rgba(40, 40, 46, 0.55);
+    -webkit-backdrop-filter: blur(30px) saturate(1.8);
+    backdrop-filter: blur(30px) saturate(1.8);
+    box-shadow: 0 40px 90px rgba(0, 0, 0, 0.45), inset 0 1.5px 0 rgba(255, 255, 255, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+  }
+  #toast { color: #1D1D1F; }
+}
