@@ -104,8 +104,17 @@
     paint();
   }
 
+  // Faster paces run the photos' whole day on a loop instead of the sun: in an hour, or in ten minutes.
+  var PACES = {hour: 3600000, loop: 600000};
+
   function paintPhotos(mins) {
-    refHour = photoHour(mins, Data.sun());
+    var pace = PACES[Prefs.wallpaperPace()];
+    refHour = pace ? (Date.now() % pace) / pace * 24 : photoHour(mins, Data.sun());
+    over.style.transition = over.style.webkitTransition = pace ? 'opacity 5s linear' : '';
+    if (pace) {
+      var night = refHour < 6.5 || refHour >= 17.5, cls = ' ' + document.body.className + ' ';
+      if (night !== cls.indexOf(' night ') >= 0) document.body.className = night ? document.body.className + ' night' : cls.replace(' night ', ' ').trim();
+    }
     var f = refHour / 1.5, base = Math.floor(f) % PHOTOS, next = (base + 1) % PHOTOS;
     if (base !== shown) {
       under.style.backgroundImage = 'url(wp-' + base + '.jpg)';
@@ -136,4 +145,5 @@
   probe.onload = usePhotos;
   probe.src = 'wp-0.jpg';
   setInterval(paint, 60000);
+  setInterval(function () { if (photos && PACES[Prefs.wallpaperPace()]) paint(); }, 5000);
 })();

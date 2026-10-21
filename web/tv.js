@@ -47,7 +47,9 @@ var TV = (function () {
 
   // Not shown among Samsung's apps: Smart Hub's own pieces, the platform's tools and players (but its browser and
   // Netflix, which live there too), services, keyboards and ad players. The rest is what Smart Hub shows.
-  var SAMSUNG_HIDDEN = /^(org\.volt\.|org\.tizen\.(?!browser$|netflix)|ise-|d75857a5-)|Service$|[Dd]aemon|Preview$|syspopup|[Hh]elper$|AdPlayer|AdSuite|[Kk]eyboard/;
+  var SAMSUNG_HIDDEN = /^(org\.volt\.|org\.tizen\.(?!browser$|netflix|primevideo$)|ise-|d75857a5-)|Service$|[Dd]aemon|Preview$|syspopup|[Hh]elper$|AdPlayer|AdSuite|[Kk]eyboard|dummy|TestSuite|Worker$|companion/;
+  // Some apps ship twice (Samsung's built-in Cobalt YouTube and a store copy): one per name, the built-in one first.
+  var SAMSUNG_PREFERRED = /^com\.samsung\.tv\./;
 
   // Samsung's live TV viewer: it shows whichever source the TV is on (the antenna, or the HDMI picked here).
   var SAMSUNG_VIEWER = 'org.tizen.tv-viewer';
@@ -74,14 +76,18 @@ var TV = (function () {
         var out = [];
         for (var i = 0; i < list.length; i++) {
           var a = list[i];
-          if (!a.id || a.show === false || a.id === self || SAMSUNG_HIDDEN.test(a.id)) continue;
+          if (!a.id || a.show === false || a.id === self || SAMSUNG_HIDDEN.test(a.id) || SAMSUNG_HIDDEN.test(a.name || "")) continue;
           var icon = a.iconPath || '';
           if (icon && icon.indexOf('://') < 0) icon = 'file://' + icon;
           out.push({id: a.id, title: a.name || a.id, icon: icon, color: ''});
         }
         // Smart Hub keeps its own order, which isn't readable: the same alphabetical order as All Apps elsewhere.
-        out.sort(function (x, y) { var a = x.title.toLowerCase(), b = y.title.toLowerCase(); return a < b ? -1 : a > b ? 1 : 0; });
-        done(out);
+        out.sort(function (x, y) {
+          var a = x.title.toLowerCase(), b = y.title.toLowerCase();
+          if (a === b) return (SAMSUNG_PREFERRED.test(y.id) ? 1 : 0) - (SAMSUNG_PREFERRED.test(x.id) ? 1 : 0);
+          return a < b ? -1 : 1;
+        });
+        done(out.filter(function (x, i) { return !i || x.title.toLowerCase() !== out[i - 1].title.toLowerCase(); }));
       }, function () { done([]); });
     } catch (e) {
       done([]);

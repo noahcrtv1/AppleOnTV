@@ -462,7 +462,7 @@
   // MARK: - Home Settings
 
   function settingRows() {
-    var lang = Prefs.language(), unit = Prefs.temperature(), theme = Prefs.theme();
+    var lang = Prefs.language(), unit = Prefs.temperature(), theme = Prefs.theme(), pace = Prefs.wallpaperPace();
     var auto = tr('Automático', 'Automatic', 'Automático'), on = tr('Ligado', 'On', 'Activado'), off = tr('Desligado', 'Off', 'Desactivado');
     var rows = [
       {label: tr('Idioma', 'Language', 'Idioma'), value: lang === 'ru' ? 'Русский' : lang === 'de' ? 'Deutsch' : lang === 'pt' ? 'Português' : lang === 'en' ? 'English' : lang === 'es' ? 'Español' : auto,
@@ -471,6 +471,8 @@
         step: function (d) { cycle('temperature', ['auto', 'C', 'F'], unit, d); renderPanels(); }},
       {label: tr('Tema', 'Theme', 'Tema'), value: theme === 'light' ? tr('Claro', 'Light', 'Claro') : theme === 'dark' ? tr('Escuro', 'Dark', 'Oscuro') : auto,
         step: function (d) { cycle('theme', ['auto', 'light', 'dark'], theme, d); checkNight(); }},
+      {label: 'Wallpaper', value: pace === 'hour' ? tr('Dia em 1 hora', 'Day in 1 hour', 'Día en 1 hora') : pace === 'loop' ? tr('Contínuo', 'Continuous', 'Continuo') : tr('Segue o sol', 'Follows the sun', 'Sigue el sol'),
+        step: function (d) { cycle('wallpaperPace', ['sun', 'hour', 'loop'], pace, d); checkNight(); }},
       {label: tr('Widget do clima', 'Weather widget', 'Widget del clima'), toggle: Prefs.weather(),
         step: function () { Prefs.set('weather', !Prefs.weather()); renderPanels(); }},
       {label: tr('Widget de cotações', 'Quotes widget', 'Widget de cotizaciones'), toggle: Prefs.quotes(),
