@@ -1,3 +1,40 @@
+# AppleOnTV
+
+**Uma home screen estilo Apple para TVs Samsung (Tizen):** vidro "Liquid Glass", o wallpaper dinâmico do macOS Mojave que acompanha o sol da sua cidade, e ícones quadrados como no Apple TV. Sem anúncios, sem root, e a home da Samsung continua lá.
+
+Feito a partir do [Free My TV](https://github.com/simbasjungles/free-my-tv) (MIT), mantendo tudo dele: apps da TV, entradas HDMI, clima, cotações e ajustes na própria TV.
+
+<img src=".github/apple-on-tv.jpg" width="880" alt="AppleOnTV: wallpaper Mojave, relógio e a prateleira de apps em vidro">
+
+## O que muda em relação ao Free My TV
+
+- **Wallpaper dinâmico.** As 16 fotos do Mojave, da madrugada à noite, esticadas para o nascer e o pôr do sol reais da sua cidade, com fade suave. Nos Ajustes: *Segue o sol*, *Dia em 1 hora* ou *Contínuo* (o dia inteiro em 10 minutos). Sem as fotos, ele usa fundos de cor que também seguem o sol.
+- **Liquid Glass leve.** Desfoque só na prateleira de apps; o resto é vidro sem blur, para rodar fluido na TV.
+- **Ícones quadrados** ocupando o tile inteiro.
+- **Apps sem duplicatas.** Esconde as cópias "dummy" e de teste da Samsung (dois Apple TV, quatro YouTube…) e mostra o Prime Video de verdade.
+
+## Instalar
+
+Precisa de uma Samsung de 2017 em diante, um Mac e os dois na mesma Wi-Fi. TVs de 2023 em diante pedem login na sua conta Samsung uma vez para gerar o certificado.
+
+1. **Clone:**
+   ```bash
+   git clone https://github.com/noahcrtv1/AppleOnTV && cd AppleOnTV
+   ```
+2. **Personalize o `config.properties`:** sua cidade (`latitude`, `longitude`, `city`), país (`tmdb_region`), idioma, moeda e temperatura. A `tmdb_key` é opcional e é sua: com ela aparecem filmes e séries em alta. **Nunca faça commit da sua chave.**
+3. **Wallpaper Mojave (opcional):** baixe o `.heic` em [dynamicwallpaper.club](https://dynamicwallpaper.club/wallpaper/ea4qz8ygywn) e extraia as fotos para `web/` (só no Mac):
+   ```bash
+   swift tools/heic_frames.swift ~/Downloads/Mojave.heic web
+   ```
+   As fotos são da Apple e ficam fora do repositório (`.gitignore`): cada um gera as suas.
+4. **Ferramentas, Developer Mode, certificado e instalação:** siga a seção [Samsung TVs (Tizen)](#samsung-tvs-tizen) abaixo e o passo a passo do `CLAUDE.md`. Ou abra a pasta no [Claude Code](https://claude.com/claude-code) e diga: *"Instale na minha Samsung em 192.168.1.50"*.
+
+Atualizar depois: `python3 tizen/build.py --sign <perfil>` e `tizen install -n FreeMyTV-tizen.wgt -t <TV>`.
+
+---
+
+*Abaixo, o README original do Free My TV.*
+
 <div align="center">
 
 <img src="docs/assets/icon-512.png" width="96" alt="">

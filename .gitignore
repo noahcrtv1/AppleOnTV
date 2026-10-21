@@ -1,5 +1,4 @@
 # Your settings and signing key stay on your machine
-config.properties
 *.keystore
 *.idsig
 
@@ -13,6 +12,7 @@ __pycache__/
 # macOS
 .DS_Store
 
-# Personal wallpapers (not ours to publish)
+
+# Dynamic wallpaper photos: extract your own with tools/heic_frames.swift (see README)
 web/wp-*.jpg
 preview-ui.jpg
