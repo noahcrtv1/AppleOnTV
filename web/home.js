@@ -191,8 +191,16 @@
 
   var TAB_KIND = [null, 'movie', 'tv'];
 
+  /** The greeting for the hour, with the name from config.properties: "Bom dia, Ana". */
+  function renderTitle() {
+    var h = new Date().getHours();
+    var hello = h >= 5 && h < 12 ? tr('Bom dia', 'Good morning', 'Buenos días')
+      : h >= 12 && h < 18 ? tr('Boa tarde', 'Good afternoon', 'Buenas tardes') : tr('Boa noite', 'Good evening', 'Buenas noches');
+    $('title').textContent = CONFIG.name ? hello + ', ' + CONFIG.name : hello;
+  }
+
   function renderTop() {
-    $('title').textContent = tr('Para você', 'For You', 'Para ti');
+    renderTitle();
     var tabs = $('tabs');
     tabs.innerHTML = '';
     var names = [tr('Explorar', 'Explore', 'Explorar'), tr('Filmes', 'Movies', 'Películas'), tr('Séries', 'Shows', 'Series')];
@@ -885,6 +893,7 @@
   });
   setInterval(function () {
     renderClock();
+    renderTitle();
     checkNight();
     Data.refresh();
     if (!saverOn && !sheetOpen() && Date.now() - idleAt > SAVER_AFTER) showSaver();

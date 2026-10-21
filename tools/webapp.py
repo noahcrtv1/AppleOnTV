@@ -12,7 +12,7 @@ import sys
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 GENERIC = {'tmdbKey': '', 'tmdbRegion': '', 'latitude': '', 'longitude': '', 'city': '', 'language': 'auto',
-           'currency': '', 'temperature': 'auto', 'showCrypto': True}
+           'currency': '', 'temperature': 'auto', 'showCrypto': True, 'name': ''}
 
 
 def config_from_args(args):
@@ -54,6 +54,7 @@ def read_config(path):
         'currency': values.get('currency', 'USD') or 'USD',
         'temperature': values.get('temperature', 'auto') or 'auto',
         'showCrypto': values.get('show_crypto', 'true').lower() != 'false',
+        'name': values.get('name', ''),
     }
 
 
