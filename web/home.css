@@ -600,8 +600,3 @@ body { font-family: -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 
 }
 .cell .face { left: 65px; width: 169px; border-radius: 38px; }
 .tile .word { font-size: 22px !important; }
-
-/* Over a photo, text gets a soft halo so it reads on sky and sand alike. */
-.photos #title, .photos .tab, .photos #clock, .photos #quotes, .photos .round .tip { text-shadow: 0 1px 14px rgba(255, 255, 255, 0.55); }
-.photos.night #title, .photos.night .tab, .photos.night #clock, .photos.night #quotes, .photos.night .round .tip { text-shadow: 0 1px 16px rgba(0, 0, 0, 0.55); }
-.photos .tab.focus { text-shadow: none; }
