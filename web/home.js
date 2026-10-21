@@ -103,11 +103,9 @@
     var word = el('div', 'word', box, app.title);
     if (wordSize) word.style.fontSize = wordSize + 'px';
     if (app.icon) {
-      var fill = el('div', 'fill', box);
-      fill.style.backgroundImage = 'url("' + app.icon + '")';
       var img = el('img', 'icon', box);
       word.style.visibility = 'hidden';
-      img.onerror = function () { box.removeChild(fill); img.parentNode.removeChild(img); word.style.visibility = ''; };
+      img.onerror = function () { img.parentNode.removeChild(img); word.style.visibility = ''; };
       img.src = app.icon;
     }
   }
@@ -290,8 +288,8 @@
   // MARK: - Shelf
 
   function renderShelf() {
-    var n = shelf.length, gap = 48, pad = 40;
-    var tw = Math.min(270, (1760 - Math.max(0, n - 1) * gap) / Math.max(1, n));
+    var n = shelf.length, gap = 40, pad = 33;
+    var tw = Math.min(140, (1760 - Math.max(0, n - 1) * gap) / Math.max(1, n));
     var width = n * tw + Math.max(0, n - 1) * gap, left = (1920 - width) / 2;
     var platter = $('platter');
     platter.style.display = n ? '' : 'none';
@@ -743,8 +741,8 @@
   // MARK: - Night, clock, screensaver
 
   function checkNight() {
-    setClass(body, 'night', Data.isNight(Date.now()) || Wallpaper.dark());
     Wallpaper.refresh();
+    setClass(body, 'night', Wallpaper.dark() || Data.isNight(Date.now()));
   }
 
   var saverOn = false, idleAt = Date.now(), saverIndex = 0, saverTimer = 0, SAVER_AFTER = 5 * 60000;

@@ -591,14 +591,17 @@ body { font-family: -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 
 /* Photo wallpapers (wp-night.jpg, wp-day.jpg): the day photo fades over the night one with the sun. */
 #sky .photo { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background-size: cover; background-position: center; }
 
-/* App icons: the icon fills the tile's height, over a blurred, enlarged copy of itself, so its own background runs
- * edge to edge instead of sitting as a square inside the tile. The blur is drawn once; nothing animates under it. */
-.tile .fill, .cell .face .fill {
-  position: absolute; left: -30%; top: -30%; width: 160%; height: 160%;
-  background-size: cover; background-position: center;
-  -webkit-filter: blur(24px) saturate(1.3); filter: blur(24px) saturate(1.3);
-}
+/* App icons as squares, the shape of the TV's own icons: the icon fills its tile edge to edge, like on iPhone and
+ * Apple TV, instead of sitting as a square inside a wide tile. Apps without an icon keep their name on brand color. */
+.tile { top: 846px; height: 140px; border-radius: 32px; }
 .tile img.icon, .cell .face img.icon {
-  left: 50%; top: 0; height: 100%; width: auto; max-width: none; max-height: none;
-  -webkit-transform: translateX(-50%); transform: translateX(-50%);
+  left: 0; top: 0; width: 100%; height: 100%; max-width: none; max-height: none;
+  -webkit-transform: none; transform: none; object-fit: cover;
 }
+.cell .face { left: 65px; width: 169px; border-radius: 38px; }
+.tile .word { font-size: 22px !important; }
+
+/* Over a photo, text gets a soft halo so it reads on sky and sand alike. */
+.photos #title, .photos .tab, .photos #clock, .photos #quotes, .photos .round .tip { text-shadow: 0 1px 14px rgba(255, 255, 255, 0.55); }
+.photos.night #title, .photos.night .tab, .photos.night #clock, .photos.night #quotes, .photos.night .round .tip { text-shadow: 0 1px 16px rgba(0, 0, 0, 0.55); }
+.photos .tab.focus { text-shadow: none; }

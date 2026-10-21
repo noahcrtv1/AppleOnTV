@@ -69,31 +69,50 @@
     }
   }
 
-  // Photos, when web/ has them: wp-night.jpg under wp-day.jpg, the day one fading in around sunrise and out around
-  // sunset. Without them, the color fields above.
-  var photos = false;
+  // Photos, when web/ has them: wp-0.jpg ... wp-15.jpg, a dynamic desktop's frames 1.5 h apart from midnight, made
+  // for a sunrise at 6:00 and a sunset at 18:00. The city's own day is stretched onto that clock, and each frame fades
+  // into the next one over its 1.5 h, a small step a minute: two layers, nothing animating.
+  var PHOTOS = 16, photos = false, shown = -1, refHour = 12;
 
-  function dayOpacity(mins, sun) {
+  /** The hour on the photos' clock: the local sunrise maps to 6:00 and the sunset to 18:00. */
+  function photoHour(mins, sun) {
     var theme = Prefs.theme();
     if (theme === 'dark') return 0;
-    if (theme === 'light') return 1;
-    function ramp(from, to) { return Math.max(0, Math.min(1, (mins - from) / (to - from))); }
-    return ease(Math.min(ramp(sun.rise - 30, sun.rise + 60), 1 - ramp(sun.set - 45, sun.set + 30)));
+    if (theme === 'light') return 12;
+    var day = sun.set - sun.rise;
+    if (mins >= sun.rise && mins < sun.set) return 6 + 12 * (mins - sun.rise) / day;
+    return (18 + 12 * ((mins - sun.set + 1440) % 1440) / (1440 - day)) % 24;
   }
+
+  function layer(sky, veil) {
+    var d = document.createElement('div');
+    d.className = 'photo';
+    sky.insertBefore(d, veil);
+    return d;
+  }
+
+  var under, over;
 
   function usePhotos() {
     var sky = document.getElementById('sky'), veil = sky.querySelector('.veil');
-    var night = document.createElement('div'), day = document.createElement('div');
-    night.className = 'photo';
-    night.style.backgroundImage = 'url(wp-night.jpg)';
-    day.className = 'photo day-photo';
-    day.style.backgroundImage = 'url(wp-day.jpg)';
-    sky.insertBefore(night, veil);
-    sky.insertBefore(day, veil);
+    under = layer(sky, veil);
+    over = layer(sky, veil);
     photos = true;
+    document.body.className += ' photos';
     document.getElementById('wpA').style.display = 'none';
     document.getElementById('wpB').style.display = 'none';
     paint();
+  }
+
+  function paintPhotos(mins) {
+    refHour = photoHour(mins, Data.sun());
+    var f = refHour / 1.5, base = Math.floor(f) % PHOTOS, next = (base + 1) % PHOTOS;
+    if (base !== shown) {
+      under.style.backgroundImage = 'url(wp-' + base + '.jpg)';
+      over.style.backgroundImage = 'url(wp-' + next + '.jpg)';
+      shown = base;
+    }
+    over.style.opacity = ease(f - Math.floor(f));
   }
 
   var front = 'wpA';
@@ -101,10 +120,7 @@
   /** Paints now, or at a given minute of the day (for the preview). */
   function paint(at) {
     var d = new Date(), mins = typeof at === 'number' ? at : d.getHours() * 60 + d.getMinutes();
-    if (photos) {
-      document.querySelector('#sky .day-photo').style.opacity = dayOpacity(mins, Data.sun());
-      return;
-    }
+    if (photos) return paintPhotos(mins);
     var next = front === 'wpA' ? 'wpB' : 'wpA', canvas = document.getElementById(next);
     if (!canvas) return;
     draw(canvas, lookAt(mins, Data.sun()), mins);
@@ -113,11 +129,11 @@
     front = next;
   }
 
-  /** True when the photos are up: they're dark at every hour, so the home screen keeps its night text. */
-  window.Wallpaper = {refresh: paint, dark: function () { return photos; }};
+  /** True when the photos show dusk or night, so the home screen takes its night text and glass. */
+  window.Wallpaper = {refresh: paint, dark: function () { return photos && (refHour < 6.5 || refHour >= 17.5); }};
   paint();
   var probe = new Image();
   probe.onload = usePhotos;
-  probe.src = 'wp-day.jpg';
+  probe.src = 'wp-0.jpg';
   setInterval(paint, 60000);
 })();
