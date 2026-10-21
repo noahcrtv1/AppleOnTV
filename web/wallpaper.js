@@ -69,11 +69,42 @@
     }
   }
 
+  // Photos, when web/ has them: wp-night.jpg under wp-day.jpg, the day one fading in around sunrise and out around
+  // sunset. Without them, the color fields above.
+  var photos = false;
+
+  function dayOpacity(mins, sun) {
+    var theme = Prefs.theme();
+    if (theme === 'dark') return 0;
+    if (theme === 'light') return 1;
+    function ramp(from, to) { return Math.max(0, Math.min(1, (mins - from) / (to - from))); }
+    return ease(Math.min(ramp(sun.rise - 30, sun.rise + 60), 1 - ramp(sun.set - 45, sun.set + 30)));
+  }
+
+  function usePhotos() {
+    var sky = document.getElementById('sky'), veil = sky.querySelector('.veil');
+    var night = document.createElement('div'), day = document.createElement('div');
+    night.className = 'photo';
+    night.style.backgroundImage = 'url(wp-night.jpg)';
+    day.className = 'photo day-photo';
+    day.style.backgroundImage = 'url(wp-day.jpg)';
+    sky.insertBefore(night, veil);
+    sky.insertBefore(day, veil);
+    photos = true;
+    document.getElementById('wpA').style.display = 'none';
+    document.getElementById('wpB').style.display = 'none';
+    paint();
+  }
+
   var front = 'wpA';
 
   /** Paints now, or at a given minute of the day (for the preview). */
   function paint(at) {
     var d = new Date(), mins = typeof at === 'number' ? at : d.getHours() * 60 + d.getMinutes();
+    if (photos) {
+      document.querySelector('#sky .day-photo').style.opacity = dayOpacity(mins, Data.sun());
+      return;
+    }
     var next = front === 'wpA' ? 'wpB' : 'wpA', canvas = document.getElementById(next);
     if (!canvas) return;
     draw(canvas, lookAt(mins, Data.sun()), mins);
@@ -82,7 +113,11 @@
     front = next;
   }
 
-  window.Wallpaper = {refresh: paint};
+  /** True when the photos are up: they're dark at every hour, so the home screen keeps its night text. */
+  window.Wallpaper = {refresh: paint, dark: function () { return photos; }};
   paint();
+  var probe = new Image();
+  probe.onload = usePhotos;
+  probe.src = 'wp-day.jpg';
   setInterval(paint, 60000);
 })();

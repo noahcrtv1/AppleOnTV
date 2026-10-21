@@ -741,7 +741,8 @@
   // MARK: - Night, clock, screensaver
 
   function checkNight() {
-    setClass(body, 'night', Data.isNight(Date.now()));
+    setClass(body, 'night', Data.isNight(Date.now()) || Wallpaper.dark());
+    Wallpaper.refresh();
   }
 
   var saverOn = false, idleAt = Date.now(), saverIndex = 0, saverTimer = 0, SAVER_AFTER = 5 * 60000;

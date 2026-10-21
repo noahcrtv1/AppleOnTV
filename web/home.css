@@ -591,3 +591,6 @@ body { font-family: -apple-system, 'SF Pro Display', 'Inter', 'Helvetica Neue', 
   }
   #toast { color: #1D1D1F; }
 }
+
+/* Photo wallpapers (wp-night.jpg, wp-day.jpg): the day photo fades over the night one with the sun. */
+#sky .photo { position: absolute; left: 0; top: 0; width: 100%; height: 100%; background-size: cover; background-position: center; -webkit-transition: opacity 60s linear; transition: opacity 60s linear; }
