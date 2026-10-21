@@ -103,9 +103,11 @@
     var word = el('div', 'word', box, app.title);
     if (wordSize) word.style.fontSize = wordSize + 'px';
     if (app.icon) {
-      var img = el('img', '', box);
+      var fill = el('div', 'fill', box);
+      fill.style.backgroundImage = 'url("' + app.icon + '")';
+      var img = el('img', 'icon', box);
       word.style.visibility = 'hidden';
-      img.onerror = function () { img.parentNode.removeChild(img); word.style.visibility = ''; };
+      img.onerror = function () { box.removeChild(fill); img.parentNode.removeChild(img); word.style.visibility = ''; };
       img.src = app.icon;
     }
   }
